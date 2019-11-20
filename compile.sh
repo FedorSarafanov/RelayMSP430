@@ -7,15 +7,15 @@ if [ -n "$1" ] # Если запустили без параметров
 	cp libmsp430.so /usr/lib/libmsp430.so
 	echo "Библиотека libmsp430 установлена"
   else # А если с параметрами
-  	rm -f balloon.bin
+  	rm -f relay.bin
   	if [ "$(whoami)" != "osabio" ]
   	then
 		echo "Запуск msp430-gcc"
-  		msp430-gcc  -Os -mmcu=msp430f5529 -o balloon.bin balloon.c
+  		msp430-gcc  -Os -mmcu=msp430f5529 -o relay.bin relay.c
   	else
 		echo "Запуск msp430-elf-gcc"
-		msp430-elf-gcc -I /opt/ti/msp430-gcc/include -Os -mmcu=msp430f5529 -o balloon.bin balloon.c
+		msp430-elf-gcc -I /opt/ti/msp430-gcc/include -Os -mmcu=msp430f5529 -o relay.bin relay.c
   	fi
-	mspdebug tilib "prog balloon.bin"
+	mspdebug tilib "prog relay.bin"
 fi
 
