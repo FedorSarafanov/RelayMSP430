@@ -1,0 +1,106 @@
+[osabio@osabio-pc Attachments_nilyin@yandex.ru_2019-11-14_16-40-28]$ mspdebug tilib -- allow-fw-update
+MSPDebug version 0.25 - debugging tool for MSP430 MCUs
+Copyright (C) 2009-2017 Daniel Beer <dlbeer@gmail.com>
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Chip info database from MSP430.dll v3.3.1.4 Copyright (C) 2013 TI, Inc.
+
+Using new (SLAC460L+) API
+MSP430_GetNumberOfUsbIfs
+MSP430_GetNameOfUsbIf
+Found FET: ttyACM0
+MSP430_Initialize: ttyACM0
+FET firmware update is required.
+Re-run with --allow-fw-update to perform a firmware update.
+tilib: device initialization failed
+[osabio@osabio-pc Attachments_nilyin@yandex.ru_2019-11-14_16-40-28]$ mspdebug tilib --allow-fw-update
+MSPDebug version 0.25 - debugging tool for MSP430 MCUs
+Copyright (C) 2009-2017 Daniel Beer <dlbeer@gmail.com>
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Chip info database from MSP430.dll v3.3.1.4 Copyright (C) 2013 TI, Inc.
+
+Using new (SLAC460L+) API
+MSP430_GetNumberOfUsbIfs
+MSP430_GetNameOfUsbIf
+Found FET: ttyACM0
+MSP430_Initialize: ttyACM0
+FET firmware update is required.
+Starting firmware update (this may take some time)...
+Initializing bootloader...
+Programming new firmware...
+    16 percent done
+    33 percent done
+    33 percent done
+    50 percent done
+    66 percent done
+    83 percent done
+   100 percent done
+   100 percent done
+Initializing bootloader...
+Programming new firmware...
+    13 percent done
+    16 percent done
+    19 percent done
+    22 percent done
+    25 percent done
+    28 percent done
+    31 percent done
+    31 percent done
+    34 percent done
+    37 percent done
+    40 percent done
+    43 percent done
+    43 percent done
+    55 percent done
+    58 percent done
+    61 percent done
+    64 percent done
+    67 percent done
+    67 percent done
+    85 percent done
+    88 percent done
+    91 percent done
+    94 percent done
+    97 percent done
+   100 percent done
+Update complete
+Done, finishing...
+MSP430_VCC: 3000 mV
+MSP430_OpenDevice
+MSP430_GetFoundDevice
+Device: MSP430F5529 (id = 0x002f)
+8 breakpoints available
+MSP430_EEM_Init
+Chip ID data:
+  ver_id:         2955
+  ver_sub_id:     0000
+  revision:       19
+  fab:            55
+  self:           5555
+  config:         12
+  fuses:          55
+Device: MSP430F5529
+
+Available commands:
+    !               fill            power           setwatch_r      
+    =               gdb             prog            setwatch_w      
+    alias           help            read            simio           
+    blow_jtag_fuse  hexout          regs            step            
+    break           isearch         reset           sym             
+    cgraph          load            run             verify          
+    delbreak        load_raw        save_raw        verify_raw      
+    dis             md              set             
+    erase           mw              setbreak        
+    exit            opt             setwatch        
+
+Available options:
+    color                       gdb_default_port            
+    enable_bsl_access           gdb_loop                    
+    enable_fuse_blow            gdbc_xfer_size              
+    enable_locked_flash_access  iradix                      
+    fet_block_size              quiet                       
+
+Type "help <topic>" for more information.
+Use the "opt" command ("help opt") to set options.
+Press Ctrl+D to quit.
