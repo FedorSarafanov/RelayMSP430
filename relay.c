@@ -1,4 +1,5 @@
 /*
+
 	Analog module for serial startup of devices using relay
 	Sarafanov F.G. (c) 2019
 
@@ -28,7 +29,7 @@
 
 #include <msp430f5529.h> 
 
-volatile unsigned int t;
+volatile unsigned long int t;
 
 volatile int t1=0;
 volatile int t2=0;
@@ -37,14 +38,19 @@ volatile int t4=0;
 volatile int t5=0;
 volatile int t6=0;
 volatile int t7=0;
-volatile int T=0;
+volatile long int T=0;
 
 int mode(int num_mode){
 	switch (num_mode){
 		case 1:{
-			t1=1; t2=2; t3=3;
-			t4=4; t5=5; t6=6;
-			t7=7; T=8;
+			t1=90; 
+			t2=400; t3=t2+100;
+			
+
+			t4=1300; t5=1400; 
+			t6=1500; t7=1600; 
+
+			T=300000;
 			break;
 		}
 		case 2:{
@@ -89,10 +95,11 @@ int main( void ) {
  	WDTCTL = WDTPW + WDTHOLD;
 
 	// обнуляем регистр
-	P6OUT = 0; P7OUT = 0; 
+	P6OUT = 0; P7OUT = 0;  P3OUT = 0;
 	// настраиваем P6.0,P6.1,P6.2, P7.0 как выходы
 	P6DIR |= BIT0+BIT1+BIT2; 
 	P7DIR |= BIT0;
+	P3DIR |= BIT6;
 
 
 	// Вход P2.0 -- логическое включение/отключение цикла со сбросом t в 0
@@ -110,7 +117,7 @@ int main( void ) {
 
 
 	// настраиваем основной таймер, в тактах которого измеряется время t,t1..t7,T
-	TA0CCR0 = 2192;
+	TA0CCR0 = 32;
     TA0CCTL0 = CCIE;
     TA0CTL = TASSEL_1 + ID_1 + MC_1 + TACLR;
 
@@ -120,7 +127,7 @@ int main( void ) {
     TA2CCTL0 = CCIE;
     TA2CTL = TASSEL_1 + ID_1 + MC_1 + TACLR;
 
-	t=0;
+	t=-2;
     __enable_interrupt();
     __no_operation();
 }
@@ -132,10 +139,10 @@ void __attribute__((interrupt(TIMER0_A0_VECTOR))) cycle(void) {
     if (t == t1) { P6OUT &= ~BIT0;}
     if (t == t2) { P6OUT |= BIT1;}
     if (t == t3) { P6OUT &= ~BIT1;}
-    if (t == t4) { P6OUT |= BIT2;}
-    if (t == t5) { P6OUT &= ~BIT2;}
-    if (t == t6) { P7OUT |= BIT0;}
-    if (t == t7) { P7OUT &= ~BIT0;}
+    // if (t == t4) { P6OUT |= BIT2;}
+    // if (t == t5) { P6OUT &= ~BIT2;}
+    // if (t == t6) { P7OUT |= BIT0; P3OUT |= BIT6;}
+    // if (t == t7) { P7OUT &= ~BIT0; P3OUT &= ~BIT6;}
     if (t == T) { mode(get_state()); t=-1;}
 	if (t != -2)	{t=t+1;};
 
