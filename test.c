@@ -31,14 +31,14 @@
 
 volatile unsigned long int t;
 
-volatile unsigned int t1=0; // Спад 1 импульса
-volatile unsigned int t2=0; // Фронт 2 импульса
-volatile unsigned int t3=0; // Спад 2 импульса
-volatile unsigned int t4=0;	// Фронт 3 импульса 
-volatile unsigned int t5=0;	// Спад 3 импульса
-volatile unsigned int t6=0;	// Фронт 4 импульса
-volatile unsigned int t7=0;	// Спад 4 импульса
-volatile unsigned long int T=0; // Период цикла
+volatile int t1=0;
+volatile int t2=0;
+volatile int t3=0;
+volatile int t4=0;
+volatile int t5=0;
+volatile int t6=0;
+volatile int t7=0;
+volatile long int T=0;
 
 
 int newmode(int timer_mode, int delay_mode){
@@ -71,29 +71,69 @@ int newmode(int timer_mode, int delay_mode){
 }
 
 int get_timer_state (){
-	if (P6IN & BIT5){}else{ return 1;	}
-	if (P3IN & BIT4){}else{ return 2;	}
-	if (P3IN & BIT3){}else{ return 3;	}
-	if (P1IN & BIT6){}else{ return 4;	}
-	if (P6IN & BIT6){}else{ return 5;	}
-	if (P3IN & BIT2){}else{ return 6;	}
-	if (P2IN & BIT7){}else{ return 7;	}
-	if (P4IN & BIT2){}else{ return 8;	}
-	if (P4IN & BIT1){}else{ return 9;	}
-	if (P3IN & BIT5){}else{ return 10;	}
+	if (P6IN & BIT5){}else{
+		return 1;
+	}
+	if (P3IN & BIT4){}else{
+		return 2;
+	}
+	if (P3IN & BIT3){}else{
+		return 3;
+	}
+	if (P1IN & BIT6){}else{
+		return 4;
+	}
+	if (P6IN & BIT6){}else{
+		return 5;
+	}
+	if (P3IN & BIT2){}else{
+		return 6;
+	}
+	if (P2IN & BIT7){}else{
+		return 7;
+	}
+	if (P4IN & BIT2){}else{
+		return 8;
+	}
+	if (P4IN & BIT1){}else{
+		return 9;
+	}
+	if (P3IN & BIT5){}else{
+		return 10;
+	}
 }
 
 int get_delay_state (){
-	if (P2IN & BIT5){}else{ return 1;	}
-	if (P2IN & BIT4){}else{ return 2;	}
-	if (P1IN & BIT5){}else{ return 3;	}
-	if (P1IN & BIT4){}else{ return 4;	}
-	if (P1IN & BIT3){}else{ return 5;	}
-	if (P1IN & BIT2){}else{ return 6;	}
-	if (P4IN & BIT3){}else{ return 7;	}
-	if (P4IN & BIT0){}else{ return 8;	}
-	if (P3IN & BIT7){}else{ return 9;	}
-	if (P8IN & BIT2){}else{ return 10;	}
+	if (P2IN & BIT5){}else{
+		return 1;
+	}
+	if (P2IN & BIT4){}else{
+		return 2;
+	}
+	if (P1IN & BIT5){}else{
+		return 3;
+	}
+	if (P1IN & BIT4){}else{
+		return 4;
+	}
+	if (P1IN & BIT3){}else{
+		return 5;
+	}
+	if (P1IN & BIT2){}else{
+		return 6;
+	}
+	if (P4IN & BIT3){}else{
+		return 7;
+	}
+	if (P4IN & BIT0){}else{
+		return 8;
+	}
+	if (P3IN & BIT7){}else{
+		return 9;
+	}
+	if (P8IN & BIT2){}else{
+		return 10;
+	}
 }
 
 
@@ -109,7 +149,7 @@ int main( void ) {
 	P3DIR |= BIT6;
 
 	P8DIR |= BIT1; // Для теста таймера 
-	P4DIR |= BIT7;
+	P1DIR |= BIT0;
 
 	// Вход P2.0 -- логическое включение/отключение цикла со сбросом t в 0
 	P2DIR &= ~BIT0; // P2.0 работает как вход
@@ -117,20 +157,18 @@ int main( void ) {
 	P2REN |= BIT0;  // включаем резистор
 
 
-	P1DIR |= BIT0;
 	// Входы P1.2,P1.3,P1.4,P1.5 будет задавать номер режима работы
-	P1DIR &= ~(BIT2 | BIT3 | BIT4 | BIT5); 
+	P1DIR &= ~(BIT2+BIT3+BIT4+BIT5); 
 	P1OUT |= BIT2+BIT3+BIT4+BIT5;
 	P1REN |= BIT2+BIT3+BIT4+BIT5;
 
 
 
-
 	// Как вход всю левую линейку J1 на длину таймера
-	P6DIR &= ~(BIT5 | BIT6);
-	P3DIR &= ~(BIT4 | BIT3 | BIT2 | BIT5); 
+	P6DIR &= ~(BIT5 + BIT6);
+	P3DIR &= ~(BIT4 + BIT3 + BIT2 + BIT5); 
 	P1DIR &= ~BIT6;
-	P4DIR &= ~(BIT2 | BIT1);
+	P4DIR &= ~(BIT2 + BIT1);
 	P2DIR &= ~BIT7;
 	/////////////////////////////////////////////////
 	P6OUT |= BIT5 + BIT6;
@@ -149,9 +187,9 @@ int main( void ) {
 
 
 	// Как вход всю правую линейку J2
-	P2DIR &= ~(BIT5 |BIT4);
-	P1DIR &= ~(BIT5 | BIT4 | BIT3 | BIT2);
-	P4DIR &= ~(BIT3 | BIT0);
+	P2DIR &= ~(BIT5+BIT4);
+	P1DIR &= ~(BIT5+BIT4+BIT3+BIT2);
+	P4DIR &= ~(BIT3+BIT0);
 	P3DIR &= ~BIT7;
 	P8DIR &= ~BIT2;
 	/////////////////////////////////////////////////
@@ -169,6 +207,15 @@ int main( void ) {
 	/////////////////////////////////////////////////
 
 
+
+
+
+
+
+	// P1IES |= BIT2+BIT3+BIT4+BIT5; // interrupt on low-to-high transition
+	// P1IE |= BIT2+BIT3+BIT4+BIT5; // interrupt enable
+
+
 	// настраиваем основной таймер, в тактах которого измеряется время t,t1..t7,T
 	TA0CCR0 = 32;
     TA0CCTL0 = CCIE;
@@ -180,32 +227,23 @@ int main( void ) {
     TA2CCTL0 = CCIE;
     TA2CTL = TASSEL_1 + ID_1 + MC_1 + TACLR;
 
+    // P8OUT |= BIT1; P1OUT |= BIT0;
 	t=-2;
     __enable_interrupt();
     __no_operation();
 }
 
-volatile int j=0;
+
 void __attribute__((interrupt(TIMER0_A0_VECTOR))) cycle(void) {
-    if (t == 0) { newmode(get_timer_state(), get_delay_state()); P6OUT |= BIT1;}
-    if (j == 0){P8OUT |= BIT1; P1OUT |= BIT0;}
-
-    // Тест частоты на осциллографе, скважность 1
-	j=j+1;
-    if (j == 100){P8OUT &= ~BIT1; P1OUT &= ~BIT0;}
-    if (j == 200){j=0;}
-
+    if (t == 0) { newmode(get_timer_state(), get_delay_state()); P6OUT |= BIT1; P8OUT |= BIT1; P1OUT |= BIT0;}
+	if (t == 10) {P8OUT &= ~BIT1;  P1OUT &= ~BIT0;}
     if (t == t1) { P6OUT &= ~BIT1;}
     if (t == t2) { P6OUT |= BIT2;}
     if (t == t3) { P6OUT &= ~BIT2;}
-
-
     // if (t == t4) { P6OUT |= BIT3;}
     // if (t == t5) { P6OUT &= ~BIT3;}
     // if (t == t6) { P6OUT |= BIT4;}
     // if (t == t7) { P6OUT |= BIT4;}
-
-
     if (t == T) { newmode(get_timer_state(), get_delay_state()); t=-1;}
 	if (t != -2)	{t=t+1;};
 
@@ -223,14 +261,16 @@ void __attribute__((interrupt(TIMER2_A0_VECTOR))) turn(void) {
 	} else {
 		old_state=state;
 		state=1;
+
 	}
 	if (state==1 && old_state==1){
-		// Останов цикла
-		if (t==-2){ t=0; }
+		if (t==-2){
+			t=0;
+		}
 	}
 	if (state==0 && old_state==0){
-		// Пуск цикла
-		t=-2;	
+		t=-2;
 		P6OUT=0;
+		// P7OUT=0;
 	}
 }
