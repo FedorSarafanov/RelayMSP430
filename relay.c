@@ -8,7 +8,7 @@
 	---------------------
 	Работает по прерыванию  таймера TA0, инкременируя счетчик t.
 	По достижению счетчиком определенных значений t1,...,t7, 
-	включаются или отключаются ноги P6.0, P6.1, P6.2 (выход на реле).
+	включаются или отключаются ноги P6.1--6.4 (выход на реле).
 
 	По достижению счетчиком значения T сбрасывается счетчик t в 0,
 	цикл замыкается.
@@ -21,9 +21,9 @@
 	Переключение режимов 
 	--------------------
 	В начале и конце цикла по времени проверяется текущее состояние 
-	контактов P1.2,P1.3,P1.4,P1.5. Замкнутый контакт определяет номер
-	текущего режима  t1,...,t7,T
-	
+	контактов (см. функции get_timer_state, get_delay_state), подтягивание 
+	контакта к земле определяет время задержки и время периода. На задержку
+	и период по 10 возможных режимов.
 */
 
 
@@ -40,33 +40,37 @@ volatile unsigned int t6=0;	// Фронт 4 импульса
 volatile unsigned int t7=0;	// Спад 4 импульса
 volatile unsigned long int T=0; // Период цикла
 
+volatile unsigned int j=0;
+volatile unsigned int test=0;
+
 
 int newmode(int timer_mode, int delay_mode){
+	// При текущей настройке таймера один отсчет -- 2 мс.
 	t1 = 90;
 	switch (delay_mode){
-		case 1:{ t2 = 270; break; }
-		case 2:{ t2 = 345; break; }
-		case 3:{ t2 = 420; break; }
-		case 4:{ t2 = 495; break; }
-		case 5:{ t2 = 570; break; }
-		case 6:{ t2 = 645; break; }
-		case 7:{ t2 = 720; break; }
-		case 8:{ t2 = 795; break; }
-		case 9:{ t2 = 870; break; }
-		case 10:{ t2 = 945; break; }
+		case 1:{ t2 = 275; break; } // 0.55 c
+		case 2:{ t2 = 350; break; }	// 0.70 с
+		case 3:{ t2 = 425; break; }	// 0.85 с
+		case 4:{ t2 = 500; break; }	// 1 с
+		case 5:{ t2 = 575; break; }	// 1.15 с
+		case 6:{ t2 = 650; break; }	// 1.30 с
+		case 7:{ t2 = 725; break; }	// 1.45 с
+		case 8:{ t2 = 800; break; }	// 1.6 с
+		case 9:{ t2 = 875; break; }	// 1.75 с
+		case 10:{t2 = 950; break; }	// 1.9 с
 	}
 	t3=t2+100;
 	switch (timer_mode){
-		case 1:{ T = 5000; break; }
-		case 2:{ T = 10000; break; }
-		case 3:{ T = 20000; break; }
-		case 4:{ T = 30000; break; }
-		case 5:{ T = 40000; break; }
-		case 6:{ T = 50000; break; }
-		case 7:{ T = 60000; break; }
-		case 8:{ T = 70000; break; }
-		case 9:{ T = 80000; break; }
-		case 10:{ T = 4194967295; break; }
+		case 1:{ T = 7500; break; }			// 15 с
+		case 2:{ T = 10000; break; }		// 20 c
+		case 3:{ T = 12500; break; }		// 25 с
+		case 4:{ T = 15000; break; }		// 30 c
+		case 5:{ T = 30000; break; }		// 1 мин
+		case 6:{ T = 60000; break; }		// 2 мин
+		case 7:{ T = 150000; break; }		// 5 мин
+		case 8:{ T = 300000; break; }		// 10 мин
+		case 9:{ T = 450000; break; }		// 15 мин
+		case 10:{ T = 4194967295; break; }  // ~3 месяца
 	}
 }
 
@@ -185,15 +189,18 @@ int main( void ) {
     __no_operation();
 }
 
-volatile int j=0;
 void __attribute__((interrupt(TIMER0_A0_VECTOR))) cycle(void) {
     if (t == 0) { newmode(get_timer_state(), get_delay_state()); P6OUT |= BIT1;}
-    if (j == 0){P8OUT |= BIT1; P1OUT |= BIT0;}
 
-    // Тест частоты на осциллографе, скважность 1
-	j=j+1;
-    if (j == 100){P8OUT &= ~BIT1; P1OUT &= ~BIT0;}
-    if (j == 200){j=0;}
+    if (test==1)
+    {
+	    if (j == 0){P8OUT |= BIT1; P1OUT |= BIT0;}
+	    // Тест частоты на осциллографе, скважность 1
+		j=j+1;
+	    if (j == 100){P8OUT &= ~BIT1; P1OUT &= ~BIT0;}
+	    if (j == 200){j=0;}
+    }
+
 
     if (t == t1) { P6OUT &= ~BIT1;}
     if (t == t2) { P6OUT |= BIT2;}
