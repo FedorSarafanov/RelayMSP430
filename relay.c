@@ -41,7 +41,7 @@ volatile unsigned int t7=0;	// Спад 4 импульса
 volatile unsigned long int T=0; // Период цикла
 
 volatile unsigned int j=0;
-volatile unsigned int test=0;
+volatile unsigned int test=1;
 
 
 int newmode(int timer_mode, int delay_mode){
@@ -62,6 +62,7 @@ int newmode(int timer_mode, int delay_mode){
 	t3=t2+100;
 	switch (timer_mode){
 		case 1:{ T = 7500; break; }			// 15 с
+		// case 1:{ T = 7500; break; }			// 15 с
 		case 2:{ T = 10000; break; }		// 20 c
 		case 3:{ T = 12500; break; }		// 25 с
 		case 4:{ T = 15000; break; }		// 30 c
@@ -153,7 +154,7 @@ int main( void ) {
 
 
 	// Как вход всю правую линейку J2
-	P2DIR &= ~(BIT5 |BIT4);
+	P2DIR &= ~(BIT5 | BIT4);
 	P1DIR &= ~(BIT5 | BIT4 | BIT3 | BIT2);
 	P4DIR &= ~(BIT3 | BIT0);
 	P3DIR &= ~BIT7;
